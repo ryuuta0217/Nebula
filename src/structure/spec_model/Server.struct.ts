@@ -12,7 +12,7 @@ import { addSchemaToObject, SchemaTypes } from '../../util/SchemaUtil'
 
 export class ServerStructure extends BaseModelStructure<Server> {
 
-    private readonly ID_REGEX = /(.+-(.+)$)/
+    private readonly ID_REGEX = /((.+)-(.+)$)/
     private readonly SERVER_META_FILE = 'servermeta.json'
 
     constructor(
@@ -118,7 +118,7 @@ export class ServerStructure extends BaseModelStructure<Server> {
 
                 // Read server meta
                 const serverMeta: ServerMeta = JSON.parse(await readFile(resolvePath(absoluteServerRoot, this.SERVER_META_FILE), 'utf-8'))
-                const minecraftVersion = new MinecraftVersion(match[2])
+                const minecraftVersion = new MinecraftVersion(match[3])
                 const untrackedFiles: UntrackedFilesOption[] = serverMeta.untrackedFiles || []
 
                 const modules: Module[] = []
@@ -160,13 +160,13 @@ export class ServerStructure extends BaseModelStructure<Server> {
                 modules.push(...fileModules)
 
                 accumulator.push({
-                    id: match[1],
+                    id: match[2],
                     name: serverMeta.meta.name,
                     description: serverMeta.meta.description,
                     icon: iconUrl,
                     version: serverMeta.meta.version,
                     address: serverMeta.meta.address,
-                    minecraftVersion: match[2],
+                    minecraftVersion: match[3],
                     ...(serverMeta.meta.discord ? {discord: serverMeta.meta.discord} : {}),
                     mainServer: serverMeta.meta.mainServer,
                     autoconnect: serverMeta.meta.autoconnect,
